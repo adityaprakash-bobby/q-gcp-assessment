@@ -4,7 +4,12 @@
 
 ```bash
 # Provision an instance with 10GB boot disk
-gcloud compute instances create gcp-aditya --machine-type f1-micro --image-family ubuntu-1604-lts --image-project ubuntu-os-cloud --boot-disk-size 10GB  --zone us-east1-b
+gcloud compute instances create gcp-aditya \
+    --machine-type f1-micro \
+    --image-family ubuntu-1604-lts \
+    --image-project ubuntu-os-cloud \
+    --boot-disk-size 10GB  \
+    --zone us-east1-b
 ```
 ![create_vm](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/vm_create.png)
 
