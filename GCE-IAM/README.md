@@ -1,6 +1,6 @@
 # Assessment Day 4 - IAM and GCE
 
-##### Configure a vm with 10 GB disk. Once launched, increase the disk size to 50GB. Verify it on system. Use CLI only.
+### Configure a vm with 10 GB disk. Once launched, increase the disk size to 50GB. Verify it on system. Use CLI only.
 
 ```bash
 # Provision an instance with 10GB boot disk
@@ -23,7 +23,11 @@ gcloud compute instances start gcp-aditya --zone=us-east1-b
 ```
 ![vm_resize_disk](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/vm_resize.png)
 
-##### Create a bucket. Do the following operations with CLI.
+
+### Configure HTTPS load balancer with  2 instances in MIG. install apache and a sample index page. Your load should be balanced on all 2 VMs.
+
+
+### Create a bucket. Do the following operations with CLI.
    
 ```bash
 # Create a bucket
