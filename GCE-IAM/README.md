@@ -24,7 +24,183 @@ gcloud compute instances start gcp-aditya --zone=us-east1-b
 ![vm_resize_disk](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/vm_resize.png)
 
 
+
+
+
 ### Configure HTTPS load balancer with  2 instances in MIG. install apache and a sample index page. Your load should be balanced on all 2 VMs.
+
+- Instance Template
+
+```json
+{
+  "creationTimestamp": "2020-01-23T10:34:06.295-08:00",
+  "description": "",
+  "id": "8682670952485771761",
+  "kind": "compute#instanceTemplate",
+  "name": "lb-ig",
+  "properties": {
+    "scheduling": {
+      "onHostMaintenance": "MIGRATE",
+      "automaticRestart": true,
+      "preemptible": false
+    },
+    "tags": {
+      "items": [
+        "http-server"
+      ]
+    },
+    "disks": [
+      {
+        "type": "PERSISTENT",
+        "deviceName": "lb-ig",
+        "autoDelete": true,
+        "index": 0.0,
+        "boot": true,
+        "kind": "compute#attachedDisk",
+        "mode": "READ_WRITE",
+        "initializeParams": {
+          "sourceImage": "projects/debian-cloud/global/images/debian-9-stretch-v20191210",
+          "diskType": "pd-standard",
+          "diskSizeGb": "10"
+        }
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "network": "projects/pe-training/global/networks/default",
+        "accessConfigs": [
+          {
+            "name": "External NAT",
+            "type": "ONE_TO_ONE_NAT",
+            "kind": "compute#accessConfig",
+            "networkTier": "PREMIUM"
+          }
+        ],
+        "kind": "compute#networkInterface"
+      }
+    ],
+    "reservationAffinity": {
+      "consumeReservationType": "ANY_RESERVATION"
+    },
+    "canIpForward": false,
+    "machineType": "f1-micro",
+    "metadata": {
+      "fingerprint": "IN4LBIix3Eo=",
+      "kind": "compute#metadata",
+      "items": [
+        {
+          "value": "#!/bin/bash\napt-get update\napt-get install -y apache2\necho \"<h1>Hello! This is $(date | md5sum)</h1>\" > /var/www/html/index.html\nsystemctl start apache2\nsystemctl enable apache2",
+          "key": "startup-script"
+        }
+      ]
+    },
+    "serviceAccounts": [
+      {
+        "email": "912623308461-compute@developer.gserviceaccount.com",
+        "scopes": [
+          "https://www.googleapis.com/auth/devstorage.read_only",
+          "https://www.googleapis.com/auth/logging.write",
+          "https://www.googleapis.com/auth/monitoring.write",
+          "https://www.googleapis.com/auth/servicecontrol",
+          "https://www.googleapis.com/auth/service.management.readonly",
+          "https://www.googleapis.com/auth/trace.append"
+        ]
+      }
+    ],
+    "displayDevice": {
+      "enableDisplay": false
+    }
+  },
+  "selfLink": "projects/pe-training/global/instanceTemplates/lb-ig"
+}
+```
+
+- Instancee group config
+
+```json
+POST https://www.googleapis.com/compute/v1/projects/pe-training/global/healthChecks
+{
+  "kind": "compute#healthCheck",
+  "name": "lb-ig-healthcheck",
+  "description": "",
+  "checkIntervalSec": 5,
+  "timeoutSec": 5,
+  "unhealthyThreshold": 3,
+  "healthyThreshold": 2,
+  "selfLink": "projects/pe-training/global/healthChecks/lb-ig-healthcheck",
+  "type": "HTTP",
+  "httpHealthCheck": {
+    "port": 80,
+    "host": "",
+    "requestPath": "/",
+    "response": null,
+    "proxyHeader": "NONE"
+  },
+  "httpsHealthCheck": null,
+  "http2HealthCheck": null,
+  "tcpHealthCheck": null,
+  "sslHealthCheck": null,
+  "udpHealthCheck": null
+}
+
+POST https://www.googleapis.com/compute/beta/projects/pe-training/regions/us-central1/instanceGroupManagers
+{
+  "name": "lb-ig-instance-grp",
+  "instanceTemplate": "projects/pe-training/global/instanceTemplates/lb-ig",
+  "baseInstanceName": "lb-ig-int-gw",
+  "targetSize": 1,
+  "autoHealingPolicies": [
+    {
+      "initialDelaySec": 300,
+      "healthCheck": "projects/pe-training/global/healthChecks/lb-ig-healthcheck"
+    }
+  ],
+  "distributionPolicy": {
+    "zones": [
+      {
+        "zone": "projects/pe-training/zones/us-central1-b"
+      },
+      {
+        "zone": "projects/pe-training/zones/us-central1-c"
+      },
+      {
+        "zone": "projects/pe-training/zones/us-central1-f"
+      }
+    ]
+  }
+}
+
+POST https://www.googleapis.com/compute/beta/projects/pe-training/regions/us-central1/autoscalers
+{
+  "name": "lb-ig-int-gw",
+  "target": "projects/pe-training/regions/us-central1/instanceGroupManagers/lb-ig-int-gw",
+  "region": "us-central1",
+  "kind": "compute#autoscaler",
+  "autoscalingPolicy": {
+    "cpuUtilization": {
+      "utilizationTarget": 0.1
+    },
+    "mode": "ON",
+    "coolDownPeriodSec": 60,
+    "minNumReplicas": 1,
+    "maxNumReplicas": 3
+  }
+}
+```
+![mig](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/mig.png)
+
+- LoadBalancer
+
+![lb](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/loadbalancer.png)
+
+- Outputs on hitting the load-balancer
+
+![op_1](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/op_1.png)
+![op_2](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/op_2.png)
+![op_3](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/op_3.png)
+
+
+
 
 
 ### Create a bucket. Do the following operations with CLI.
