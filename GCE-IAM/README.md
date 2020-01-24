@@ -238,7 +238,7 @@ gsutil cp gs://gcpbucketaditya/testfile.txt gs://gcpbucketaditya2/
 
 ```bash
 # Download a file from bucket to the local PC
-gsutil cp -m gs://gcpbucketaditya/testfile2.txt .
+gsutil -m cp gs://gcpbucketaditya/testfile2.txt .
 ```
 ![file_download](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/bucket_file_download.png)
 
