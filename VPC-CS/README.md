@@ -163,3 +163,25 @@ POST https://www.googleapis.com/compute/v1/projects/pe-training/zones/us-central
   ]
 }
 ```
+
+4. SSH into instance B using instance A and try to install nginx
+
+Use **ssh-keygen** in your local machine or the Clou Shell to generate a key-pair. By default, the key files are stored in `$HOME/.ssh/` folder with the names as `id_rsa` for the public key and `id_rsa.pub` for the public key. Then add the public key to the SSH forwarding agent using the **ssh-add** tool. Use this public key while you are creating the above instances. Here, I am using a single key-pair for both the instances (better to use different key-pairs for both of the instances, due to security reasons). There after you can `ssh` into the machines.
+
+```bash
+# generate key-pair
+ssh-keygen
+# generates $HOME/.ssh/id_rsa and $HOME/.ssh/id_rsa.pub if you don't specify the path
+
+# add private key the ssh forwarding agent
+ssh-add -k $HOME/.ssh/id_rsa
+
+# SSH into instance A with ssh forwarding agent
+ssh -A <username>@<public-ip-of-instance>
+
+# SSH into instance B for instance A
+<username>@instance-a$ ssh <username>@<private-ip-of-instance-b>
+
+# install nginx in instance B
+<username>@instance-b$ sudo apt-get install nginx
+```
