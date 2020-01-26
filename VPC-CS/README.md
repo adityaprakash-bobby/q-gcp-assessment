@@ -201,7 +201,7 @@ ssh-add -k $HOME/.ssh/id_rsa
 # SSH into instance A with ssh forwarding agent
 ssh -A <username>@<public-ip-of-instance-a>
 
-# SSH into instance B for instance A
+# SSH into instance B from instance A
 <username>@instance-a$ ssh <username>@<private-ip-of-instance-b>
 
 # install nginx in instance B
