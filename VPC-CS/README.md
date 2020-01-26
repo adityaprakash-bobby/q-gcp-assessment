@@ -164,15 +164,15 @@ POST https://www.googleapis.com/compute/v1/projects/pe-training/zones/us-central
 }
 ```
 
-3. Configure NAT so instance can access Internet
+3. Configure NAT so instance B can access Internet
 
 Use the `gcloud` CLI in the cloud shell or the console for the purpose of creating a Cloud NAT.
 
 ```bash
-# create a cloud router for the NAT\
+# create a cloud router for the NAT
 gcloud compute routers create nat-cloud-router \
   --network a2q2vpc \
-  -region us-central1
+  --region us-central1
 
 # create a NAT for the subnet in the given region
 gcloud compute routers nats create nat-config \
@@ -186,7 +186,7 @@ gcloud compute routers nats create nat-config \
 
 4. SSH into instance B using instance A and try to install nginx
 
-Use **ssh-keygen** in your local machine or the Clou Shell to generate a key-pair. By default, the key files are stored in `$HOME/.ssh/` folder with the names as `id_rsa` for the public key and `id_rsa.pub` for the public key. Then add the public key to the SSH forwarding agent using the **ssh-add** tool. Use this public key while you are creating the above instances. Here, I am using a single key-pair for both the instances (better to use different key-pairs for both of the instances, due to security reasons). There after you can `ssh` into the machines.
+Use **ssh-keygen** in your local machine or the Cloud Shell to generate a key-pair. By default, the key files are stored in `$HOME/.ssh/` folder with the names as `id_rsa` for the public key and `id_rsa.pub` for the public key. Then add the public key to the SSH forwarding agent using the **ssh-add** tool. Use this public key while you are creating the above instances. Here, I am using a single key-pair for both the instances (better to use different key-pairs for both of the instances, due to security reasons). There after you can `ssh` into the machines.
 
 ```bash
 # generate key-pair
@@ -197,7 +197,7 @@ ssh-keygen
 ssh-add -k $HOME/.ssh/id_rsa
 
 # SSH into instance A with ssh forwarding agent
-ssh -A <username>@<public-ip-of-instance>
+ssh -A <username>@<public-ip-of-instance-a>
 
 # SSH into instance B for instance A
 <username>@instance-a$ ssh <username>@<private-ip-of-instance-b>
