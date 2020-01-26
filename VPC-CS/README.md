@@ -4,7 +4,7 @@
 
 Use the following REST equivalent of the instance to create a VM in the default VPC with an external IP. 
 
-**Note:** We are using same custom key-pair generated using **ssh-keygen** tool for logging into both the instances A and B. Hence, the public key needs to be mentiomed in the configuration of both instances. Check step 4 for key-pair generation.
+**Note:** We are using same custom key-pair generated using **ssh-keygen** tool for logging into both the instances A and B. Hence, the public key needs to be mentioned in the configuration of both instances. Check step 4 for key-pair generation.
 
 ```json
 POST https://www.googleapis.com/compute/v1/projects/pe-training/zones/us-central1-a/instances
