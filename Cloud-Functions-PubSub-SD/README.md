@@ -152,3 +152,9 @@ ssh -i id_rsa.pub <user-name>@<public-ip-of-instance>
 **The following was the CPU utilization while a spike in CPU was caused.**
 
 ![cpu_spike](https://raw.githubusercontent.com/adityaprakash-bobby/q-gcp-assessment/master/assets/cpu_spike.png)
+
+#### 3. Create a Cloud Function to convert the pub/sub message to json file and store it in GCS bucket
+
+The solution for the cloud functions is provided in the following `store_gcs.py` and `requirements.txt` file.
+ - [store_gcs.py](https://github.com/adityaprakash-bobby/q-gcp-assessment/blob/master/Cloud-Functions-PubSub-SD/store_gcs.py) with function to execute as `store_pubsub`.
+ - [requirements.txt](https://github.com/adityaprakash-bobby/q-gcp-assessment/blob/master/Cloud-Functions-PubSub-SD/requirements.txt)
