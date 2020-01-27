@@ -11,12 +11,21 @@ def store_pubsub(event, context):
     pubsub_message = base64.b64decode(event['data']).decode('utf-8')
     pubsub_message = eval(pubsub_message)
     
-    storage_client = storage.Client()
-    bucket = storage_client.get_bucket('gcpbucketaditya')
-    
+    # read the pubsub message and gather essentials
     file_name = pubsub_message['name'] + '.json'
     file_content = eval(pubsub_message['content'])
-	
+    gcs_bucket = file_content['destination']
 
+    # Initiate a storage client and a bucket variable
+    storage_client = storage.Client()
+    bucket = None
+    
+    # Create a bucket, if one does not exist else, use the existing bucket
+    try:
+        bucket = storage_client.create_bucket(gcs_bucket)
+    except Exception as e:
+        bucket = storage_client.get_bucket(gcs_bucket)
+        
+    # upload the contents to a file in the above bucket
     blob = bucket.blob(file_name)
     blob.upload_from_string(json.dumps(file_content, indent = 4, sort_keys=True))
